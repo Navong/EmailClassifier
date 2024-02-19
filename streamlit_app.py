@@ -9,6 +9,9 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 import base64
 import os
+import time
+
+
 
 # Download NLTK resources
 nltk.download('stopwords')
@@ -38,16 +41,39 @@ def transform_text(text):
 
     y = [i for i in text if i.isalnum()]
 
-    text = [i for i in y if i not in stopwords.words('english') and i not in string.punctuation]
+    text = [i for i in y if i not in stopwords.words(
+        'english') and i not in string.punctuation]
 
     return " ".join([ps.stem(i) for i in text])
 
 
+def clear_token_file():
+    token_file = 'token.json'
+    max_age_seconds = 3600  # 1 hour
+
+    if os.path.exists(token_file):
+        # Get the modification time of the token file
+        file_modified_time = os.path.getmtime(token_file)
+
+        # Get the current time
+        current_time = time.time()
+
+        # Calculate the age of the token file in seconds
+        age_seconds = current_time - file_modified_time
+
+        # If the token file is older than the maximum age, delete it
+        if age_seconds > max_age_seconds:
+            os.remove(token_file)
+
+# Call the function to clear the token file
+
+
 def get_credentials():
+    clear_token_file()
     if not os.path.exists('token.json'):
         st.error("No user credentials found. Please log in.")
         authenticate_user()
-        #refresh page
+        # refresh page
         st.experimental_rerun()
     creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     if not creds or not creds.valid:
@@ -152,8 +178,10 @@ def main():
                 )
 
                 # Highlight the classification result
-                st.write(f'<p style="padding-top: 20px; font-weight: bold;">Classification:</p>', unsafe_allow_html=True)
-                st.write(f'<p>{RED_HIGHLIGHT if result == 1 else GREEN_HIGHLIGHT}</p>', unsafe_allow_html=True)
+                st.write(
+                    f'<p style="padding-top: 20px; font-weight: bold;">Classification:</p>', unsafe_allow_html=True)
+                st.write(
+                    f'<p>{RED_HIGHLIGHT if result == 1 else GREEN_HIGHLIGHT}</p>', unsafe_allow_html=True)
 
     except Exception as e:
         st.write(f'An error occurred: {e}')
