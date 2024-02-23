@@ -1,3 +1,4 @@
+import google_auth_oauthlib
 import streamlit as st
 import pickle
 import string
@@ -10,6 +11,7 @@ from googleapiclient.discovery import build
 import base64
 import os
 import time
+import google.auth.transport.requests
 
 
 
@@ -68,26 +70,47 @@ def clear_token_file():
 # Call the function to clear the token file
 
 
+# def get_credentials():
+#     clear_token_file()
+#     if not os.path.exists('token.json'):
+#         st.error("No user credentials found. Please log in.")
+#         authenticate_user()
+#         # refresh page
+#         st.experimental_rerun()
+#     creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+#     if not creds or not creds.valid:
+#         st.error("Invalid user credentials. Please log in.")
+#         authenticate_user()
+#     return creds
+
+
+# def authenticate_user():
+#     flow = InstalledAppFlow.from_client_secrets_file(
+#         'credentials.json', SCOPES)
+#     creds = flow.run_local_server(port=0)
+#     with open('token.json', 'w') as token:
+#         token.write(creds.to_json())
+            
 def get_credentials():
-    clear_token_file()
-    if not os.path.exists('token.json'):
-        st.error("No user credentials found. Please log in.")
-        authenticate_user()
-        # refresh page
-        st.experimental_rerun()
-    creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    creds = None
+    # The file token.pickle stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first time.
+    if os.path.exists('token.pickle'):
+        with open('token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+    # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
-        st.error("Invalid user credentials. Please log in.")
-        authenticate_user()
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(google.auth.transport.requests.Request())
+        else:
+            flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
+
     return creds
-
-
-def authenticate_user():
-    flow = InstalledAppFlow.from_client_secrets_file(
-        'credentials.json', SCOPES)
-    creds = flow.run_local_server(port=0)
-    with open('token.json', 'w') as token:
-        token.write(creds.to_json())
 
 
 def get_email_body(service, message_id):
