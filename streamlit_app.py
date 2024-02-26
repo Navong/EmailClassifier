@@ -249,19 +249,19 @@ def main():
 
     with about_me_tab:
         st.markdown("""
-        I'm Navong (짠나봉), a Computer Science student at Inha University. I'm passionate about AI, Blockchain, NLP, Security, and Cloud. These domains are all interconnected in fascinating ways:
-
-        :brain: AI and NLP: I'm interested in Natural Language Processing (NLP), a subfield of AI that focuses on how computers can understand and generate human language. NLP techniques are essential for developing AI systems that can interact with humans in a natural way.
-
-        :lock: AI and Security: I'm also interested in how AI technologies like machine learning and deep learning can be used to enhance cybersecurity. AI can help with threat detection, anomaly detection, and improving overall security infrastructure.
-
-        :ledger: AI and Blockchain: I think there's a lot of potential for combining AI and blockchain technologies. By using decentralized networks, we can create secure and transparent AI applications.
-
-        :cloud: AI and Cloud: Cloud computing provides the perfect infrastructure for AI applications. Many AI services, like machine learning platforms and NLP APIs, are offered through cloud providers.
-
-        :bulb: AI and Innovation: I love exploring new technologies and domains like AI, Blockchain, NLP, Security, and Cloud. Continuous learning and innovation are key to personal and professional growth!
-
-        🤔 I like to try new things and discover something new every single day. :sparkles:
+            1. **Purpose of the Project**:
+                - My main goal was to classify text messages as spam or ham using a pre-trained machine learning model (`model.pkl`).
+                - I chose to integrate the Gmail API into my project to analyze user emails and determine whether they are spam or not.
+            1. **Integration of Gmail API**:
+                - Instead of a simple input box for users to input text, I decided to use the Gmail API for spam classification. This decision was driven by my desire to provide more functionality and to learn about integrating APIs.
+                - However, integrating the Gmail API presented challenges, especially regarding user authentication and privacy concerns.
+            2. **Challenges and Solutions**:
+                - Initially, I attempted to create a login page for public users to log in via Google OAuth 2.0. However, due to privacy concerns and the complexity of Gmail API access, I found this approach challenging.
+                - To overcome these challenges, I decided to use my own Gmail API credentials to access my mailbox and demonstrate the functionality to users.
+                - I converted my credentials to a `token.pickle` file to maintain security and privacy. This ensured that users could only access my test email data and not my actual credentials.
+            3. **User Experience and Safety**:
+                - By integrating the Gmail API and providing access to my mailbox in the frontend, users can interact with the application and observe how emails are classified as spam or ham.
+                - Using the `token.pickle` file instead of my actual credentials ensures that users can access the functionality without compromising the security of my Gmail account.
         """)
 
 
